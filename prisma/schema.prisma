@@ -1,0 +1,67 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  posts     Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id         String     @id @default(cuid())
+  title      String
+  content    String
+  author     User       @relation(fields: [authorId], references: [id])
+  tags       Tag[]
+  categories Category[]
+	openGraph  openGraph? @relation(fields: [openGraphId], references: [id])
+  authorId   String
+  issueAt    DateTime   @default(now())
+  approved   Boolean    @default(false)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+	openGraphId String?
+}
+
+model Tag {
+  id          String     @id @default(cuid())
+  name        String
+  openGraph   openGraph? @relation(fields: [openGraphId], references: [id])
+  posts       Post[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  openGraphId String?
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  openGraph   openGraph? @relation(fields: [openGraphId], references: [id])
+  posts       Post[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  openGraphId String?
+}
+
+model openGraph {
+  id             String     @id @default(cuid())
+  title          String
+  description    String
+  image          String     @default("https://via.placeholder.com/1200x630")
+  twitterImgType String     @default("summary_large_image")
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  Tag            Tag[]
+  Category       Category[]
+	Post           Post[]
+}
