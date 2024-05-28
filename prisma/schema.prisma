@@ -8,10 +8,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator markdown {
+  provider = "prisma-markdown"
+  output   = "../docs/ERD.md"
+  title    = "PET System"
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String?
+  password  String
   posts     Post[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
