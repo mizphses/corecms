@@ -15,4 +15,5 @@ jobs:
       # this is pipeline is about releasing the go module and binary
       scan-args: |-
         --experimental-licenses-summary
+        --upload-sarif false
         ./
