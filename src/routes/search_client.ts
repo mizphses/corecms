@@ -4,11 +4,11 @@ import { PrismaD1 } from "@prisma/adapter-d1"
 import type { Env } from "../env"
 const search = new Hono<{ Bindings: Env }>()
 
-search.get("/title/:word", (c) => {
+search.get("/title/:word", async (c) => {
   const prisma = new PrismaClient({ adapter: new PrismaD1(c.env.CORECMS_DB) })
   const word = c.req.param("word")
   const number_of_articles = Number(c.req.query("num")) || 100
-  const articles = prisma.post.findMany({
+  const articles = await prisma.post.findMany({
     where: {
       title: {
         contains: word,
@@ -26,16 +26,16 @@ search.get("/title/:word", (c) => {
   })
 })
 
-search.get("/tags/:tag", (c) => {
+search.get("/tags/:tag", async (c) => {
   const prisma = new PrismaClient({ adapter: new PrismaD1(c.env.CORECMS_DB) })
   const word = c.req.param("tag")
   const number_of_articles = Number(c.req.query("num")) || 100
-  const articles = prisma.tag.findMany({
+  const articles = await prisma.tag.findMany({
     where: {
       name: word,
     },
     select: {
-      postId: true,
+      posts: true,
     },
     take: number_of_articles,
   })
@@ -45,16 +45,16 @@ search.get("/tags/:tag", (c) => {
   })
 })
 
-search.get("/categories/:category", (c) => {
+search.get("/categories/:category", async (c) => {
   const prisma = new PrismaClient({ adapter: new PrismaD1(c.env.CORECMS_DB) })
   const word = c.req.param("category")
   const number_of_articles = Number(c.req.query("num")) || 100
-  const articles = prisma.category.findMany({
+  const articles = await prisma.category.findMany({
     where: {
-      category: word,
+      name: word,
     },
     select: {
-      postId: true,
+      posts: true,
     },
     take: number_of_articles,
   })
