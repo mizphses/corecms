@@ -24,13 +24,13 @@ model Post {
   author     User       @relation(fields: [authorId], references: [id])
   tags       Tag[]
   categories Category[]
-	openGraph  openGraph? @relation(fields: [openGraphId], references: [id])
+  openGraph  openGraph? @relation(fields: [openGraphId], references: [id])
   authorId   String
   issueAt    DateTime   @default(now())
   approved   Boolean    @default(false)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-	openGraphId String?
+  openGraphId String?
 }
 
 model Tag {
@@ -63,5 +63,5 @@ model openGraph {
   updatedAt      DateTime   @updatedAt
   Tag            Tag[]
   Category       Category[]
-	Post           Post[]
+  Post           Post[]
 }
