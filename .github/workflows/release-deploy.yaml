@@ -72,10 +72,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          secrets: |
-            TOKEN_KEY
-        env:
-          TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
 
   db-deploy:
     runs-on: ubuntu-latest
