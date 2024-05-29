@@ -1,18 +1,26 @@
 import { SignJWT, jwtVerify } from "jose"
 
-type payload = {
+type sessionPayload = {
   email: string
+  uid: string
+  jti: string
 }
 
-export const createToken = async (payload: payload, secret: string) => {
+type refreshPayload = {
+  email: string
+  uid: string
+  jti: string
+}
+
+export const createToken = async (payload: sessionPayload, secret: string) => {
   const jwt = new SignJWT(payload)
   const signKey = new TextEncoder().encode(secret)
 
   return jwt
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setIssuer("https://planet.mizphses.com")
-    .setAudience("https://planet.mizphses.com")
+    .setIssuer("https://corecmsadmin.mizphses.com")
+    .setAudience("https://corecmsadmin.mizphses.com")
     .setExpirationTime("2h")
     .sign(signKey)
 }
@@ -21,22 +29,25 @@ export const verifyToken = async (token: string, secret: string) => {
   const verifyKey = new TextEncoder().encode(secret)
   const { payload } = await jwtVerify(token, verifyKey, {
     algorithms: ["HS256"],
-    issuer: "https://planet.mizphses.com",
-    audience: "https://planet.mizphses.com",
+    issuer: "https://corecmsadmin.miz.cab",
+    audience: "https://corecmsadmin.miz.cab",
   })
 
-  return payload as payload
+  return payload as sessionPayload
 }
 
-export const createRefreshToken = async (payload: payload, secret: string) => {
+export const createRefreshToken = async (
+  payload: refreshPayload,
+  secret: string,
+) => {
   const jwt = new SignJWT(payload)
   const signKey = new TextEncoder().encode(secret)
 
   return jwt
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setIssuer("https://planet.mizphses.com")
-    .setAudience("https://planet.mizphses.com")
+    .setIssuer("https://corecmsadmin.miz.cab")
+    .setAudience("https://corecmsadmin.miz.cab")
     .setExpirationTime("7d")
     .sign(signKey)
 }
@@ -45,9 +56,9 @@ export const verifyRefreshToken = async (token: string, secret: string) => {
   const verifyKey = new TextEncoder().encode(secret)
   const { payload } = await jwtVerify(token, verifyKey, {
     algorithms: ["HS256"],
-    issuer: "https://planet.mizphses.com",
-    audience: "https://planet.mizphses.com",
+    issuer: "https://corecmsadmin.miz.cab",
+    audience: "https://corecmsadmin.miz.cab",
   })
 
-  return payload
+  return payload as refreshPayload
 }

@@ -1,5 +1,6 @@
 import { Hono } from "hono"
 import { sha3_512 } from "js-sha3"
+import { createId } from "@paralleldrive/cuid2"
 import { PrismaD1 } from "@prisma/adapter-d1"
 import { PrismaClient } from "@prisma/client"
 import {
@@ -19,7 +20,7 @@ users.post("/new", async (c) => {
   const user = await prisma.user.create({
     data: {
       email,
-      passwordHashed: sha3_512(password + c.env.SALT),
+      password: sha3_512(password + c.env.SALT),
       name,
     },
   })
@@ -36,14 +37,36 @@ users.post("/login", async (c) => {
   const user = await prisma.user.findFirst({
     where: {
       email,
-      passwordHashed: sha3_512(password + c.env.SALT),
+      password: sha3_512(password + c.env.SALT),
     },
   })
   if (!user) {
     return new Response("Invalid Login Credentials", { status: 401 })
   }
+
+  const token = await prisma.sessionTokens.create({
+    data: {
+      userId: user.id,
+      token: await createToken(
+        { email: user.email, uid: user.id, jti: createId() },
+        c.env.TOKEN_KEY,
+      ),
+      validThru: new Date(Date.now() + 1000 * 60 * 60 * 2),
+    },
+  })
+  const refreshToken = await prisma.refreshTokens.create({
+    data: {
+      userId: user.id,
+      token: await createRefreshToken(
+        { email: user.email, uid: user.id, jti: token.token },
+        c.env.TOKEN_KEY,
+      ),
+      validThru: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+    },
+  })
   const content = {
-    token: await createToken({ email: user.email }, c.env.TOKEN_KEY),
+    token: token.token,
+    refreshToken: refreshToken.token,
   }
   return c.json(content)
 })

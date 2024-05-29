@@ -48,6 +48,24 @@ erDiagram
   DateTime createdAt
   DateTime updatedAt
 }
+"sessionTokens" {
+  String id PK
+  String token UK
+  String userId FK
+  DateTime createdAt
+  DateTime updatedAt
+  DateTime validThru
+  Boolean diabled
+}
+"refreshTokens" {
+  String id PK
+  String token UK
+  String userId FK
+  DateTime createdAt
+  DateTime updatedAt
+  DateTime validThru
+  Boolean diabled
+}
 "_PostToTag" {
   String A FK
   String B FK
@@ -60,6 +78,8 @@ erDiagram
 "Post" }o--o| "openGraph" : openGraph
 "Tag" }o--o| "openGraph" : openGraph
 "Category" }o--o| "openGraph" : openGraph
+"sessionTokens" }o--|| "User" : user
+"refreshTokens" }o--|| "User" : user
 "_PostToTag" }o--|| "Post" : Post
 "_PostToTag" }o--|| "Tag" : Tag
 "_CategoryToPost" }o--|| "Category" : Category
@@ -117,6 +137,28 @@ erDiagram
   - `twitterImgType`: 
   - `createdAt`: 
   - `updatedAt`: 
+
+### `sessionTokens`
+
+**Properties**
+  - `id`: 
+  - `token`: 
+  - `userId`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+  - `validThru`: 
+  - `diabled`: 
+
+### `refreshTokens`
+
+**Properties**
+  - `id`: 
+  - `token`: 
+  - `userId`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+  - `validThru`: 
+  - `diabled`: 
 
 ### `_PostToTag`
 Pair relationship table between [Post](#Post) and [Tag](#Tag)

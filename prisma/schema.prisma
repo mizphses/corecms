@@ -20,6 +20,8 @@ model User {
   name      String?
   password  String
   posts     Post[]
+  sessionTokens sessionTokens[]
+  refreshTokens refreshTokens[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -71,4 +73,26 @@ model openGraph {
   Tag            Tag[]
   Category       Category[]
   Post           Post[]
+}
+
+model sessionTokens {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  validThru DateTime @default(now())
+  diabled   Boolean  @default(false)
+  user     User     @relation(fields: [userId], references: [id])
+}
+
+model refreshTokens {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  validThru DateTime @default(now())
+  diabled   Boolean  @default(false)
+  user     User     @relation(fields: [userId], references: [id])
 }
