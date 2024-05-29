@@ -4,7 +4,7 @@ import { PrismaD1 } from "@prisma/adapter-d1"
 import type { Env } from "../env"
 const search = new Hono<{ Bindings: Env }>()
 
-search.get("/title/:word", async (c) => {
+search.get("/:word", async (c) => {
   const prisma = new PrismaClient({ adapter: new PrismaD1(c.env.CORECMS_DB) })
   const word = c.req.param("word")
   const number_of_articles = Number(c.req.query("num")) || 100
@@ -18,6 +18,9 @@ search.get("/title/:word", async (c) => {
       id: true,
       title: true,
       issueAt: true,
+      openGraph: {
+        select: { description: true, image: true },
+      },
     },
     take: number_of_articles,
   })
@@ -35,7 +38,16 @@ search.get("/tags/:tag", async (c) => {
       name: word,
     },
     select: {
-      posts: true,
+      posts: {
+        select: {
+          id: true,
+          title: true,
+          issueAt: true,
+          openGraph: {
+            select: { description: true, image: true },
+          },
+        },
+      },
     },
     take: number_of_articles,
   })
@@ -54,7 +66,16 @@ search.get("/categories/:category", async (c) => {
       name: word,
     },
     select: {
-      posts: true,
+      posts: {
+        select: {
+          id: true,
+          title: true,
+          issueAt: true,
+          openGraph: {
+            select: { description: true, image: true },
+          },
+        },
+      },
     },
     take: number_of_articles,
   })
