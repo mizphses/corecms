@@ -1,0 +1,407 @@
+openapi: 3.1.0
+info:
+  title: CoreCMS
+  version: 1.0.0
+  description: Headless and Lightweight Edge Running CMS
+  contact:
+    name: mizphses
+    email: mizphses@gmail.com
+    url: https://mizphses.com
+servers:
+  - url: http://localhost:8787
+    description: Development server
+
+paths:
+  /:
+    get:
+      operationId: healthCheck
+      tags:
+        - Health
+      summary: Health Check
+      description: Check if the server is running
+      responses:
+        '200':
+          description: Server is running
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error500'
+  /users/new:
+    post:
+      operationId: signUp
+      tags:
+        - Accounts
+      summary: Health Check
+      description: Check if the server is running
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRegistrationRequest'
+      responses:
+        '200':
+          description: Account created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountRegistrationResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error500'
+  /users/login:
+    post:
+      operationId: signIn
+      tags:
+        - Accounts
+      summary: Sign In
+      description: Sign in to the account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Sign In Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInTokenWithRefreshTokenResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error500'
+  /authed/users/login:
+    post:
+      operationId: refreshSignIn
+      tags:
+        - Accounts
+        - Authed
+      summary: Sign In
+      description: Sign in to the account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Sign In Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInTokenResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error500'
+      security:
+        - bearerAuth: []
+  /article:
+    get:
+      operationId: getArticles
+      tags:
+        - Articles
+      summary: Get Articles
+      description: Get all articles
+      responses:
+        '200':
+          description: Articles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllArticlesResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error500'
+  /article/{id}:
+    get:
+      operationId: getArticle
+      tags:
+        - Articles
+      summary: Get Article
+      description: Get article by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Article ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Article
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleContent'
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error500'
+
+  /search/{word}:
+    get:
+      operationId: searchArticles
+      tags:
+        - Articles
+      summary: Search Articles
+      description: Search articles by word
+      parameters:
+        - name: word
+          in: path
+          required: true
+          description: Search word
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Articles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResultAllArticles'
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error500'
+
+  /search/categories/{word}:
+    get:
+      operationId: searchArticlesByCategories
+      tags:
+        - Articles
+      summary: Search Articles
+      description: Search articles by word
+      parameters:
+        - name: word
+          in: path
+          required: true
+          description: Search word
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Articles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResultAllArticles'
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error500'
+  /search/tags/{word}:
+    get:
+      operationId: searchArticlesByTags
+      tags:
+        - Articles
+      summary: Search Articles
+      description: Search articles by word
+      parameters:
+        - name: word
+          in: path
+          required: true
+          description: Search word
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Articles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResultAllArticles'
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Error500'
+components:
+  schemas:
+    Error500:
+      type: string
+      example: "Internal Server Error"
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "Hello, World!"
+    AccountRegistrationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "example"
+        email:
+          type: string
+          example: "example@example.com"
+        password:
+          type: string
+          example: "password"
+    AccountRegistrationResponse:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "example@example.com"
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "example@example.com"
+        password:
+          type: string
+          example: "password"
+    SignInTokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImhvZ2VAZ21haWwuY2..."
+    SignInTokenWithRefreshTokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImhvZ2VAZ21haWwuY2..."
+        refreshToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImhvZ2VAZ21haWwuY2..."
+    ArticlesMinifiedData:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Example"
+        id:
+          type: string
+          example: "1"
+        issueAt:
+          type: string
+          example: "2021-10-10T10:10:10Z"
+        OpenGraph:
+          $ref: '#/components/schemas/OpenGraphMinified'
+    AllArticlesResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ArticlesMinifiedData'
+    SearchResultAllArticles:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArticlesMinifiedData'
+    PublicAuthor:
+      author:
+        type: object
+        properties:
+          id:
+            type: string
+            example: "1"
+          name:
+            type: string
+            example: "example"
+    PublicTag:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        name:
+          type: string
+          example: "example"
+    PublicCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        name:
+          type: string
+          example: "example"
+    OpenGraph:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Example"
+        description:
+          type: string
+          example: "Example description"
+        image:
+          type: string
+          example: "https://via.placeholder.com/1200x630"
+        twitterImgType:
+          type: string
+          example: "summary_large_image"
+    OpenGraphMinified:
+      type: object
+      properties:
+        description:
+          type: string
+          example: "Example description"
+        image:
+          type: string
+          example: "https://via.placeholder.com/1200x630"
+    ArticleContent:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Example"
+        content:
+          type: string
+          example: "Example content"
+        issueAt:
+          type: string
+          example: "2021-10-10T10:10:10Z"
+        updatedAt:
+          type: string
+          example: "2021-10-10T10:10:10Z"
+        author:
+          $ref: '#/components/schemas/PublicAuthor'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicTag'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicCategory'
+        openGraph:
+          $ref: '#/components/schemas/OpenGraph'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
