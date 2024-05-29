@@ -16,7 +16,7 @@
     "migration:write-init": "prisma migrate diff --script --from-empty --to-schema-datamodel ./prisma/schema.prisma --output",
     "migration:write": "prisma migrate diff --script --from-local-d1 --to-schema-datamodel ./prisma/schema.prisma --output",
     "migrate:dev": "wrangler d1 migrations apply corecms_db --local",
-    "migrate:prod": "wrangler d1 migrations apply corecms_db --env production",
+    "migrate:remote": "wrangler d1 migrations apply corecms_db --remote",
     "gen": "run-p gen:*",
     "gen:client": "prisma generate",
     "type-check": "tsc --noEmit",
@@ -24,26 +24,31 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
-    "@cloudflare/vitest-pool-workers": "^0.1.0",
-    "@cloudflare/workers-types": "^4.20240423.0",
+    "@cloudflare/vitest-pool-workers": "^0.1.19",
+    "@cloudflare/workers-types": "^4.20240524.0",
     "@prisma/adapter-d1": "^5.14.0",
     "@prisma/adapter-pg": "^5.14.0",
-    "@prisma/adapter-pg-worker": "^5.13.0",
+    "@prisma/adapter-pg-worker": "^5.14.0",
     "@types/pg": "^8.11.6",
     "husky": "^9.0.11",
-    "npm-run-all2": "^6.1.2",
+    "npm-run-all2": "^6.2.0",
     "pg": "^8.11.5",
     "prisma-markdown": "^1.0.9",
-    "typescript": "^5.0.4",
+    "typescript": "^5.4.5",
     "vitest": "1.3.0",
-    "wrangler": "^3.0.0"
+    "wrangler": "^3.57.2"
   },
   "dependencies": {
-    "@prisma/client": "^5.13.0",
-    "hono": "^4.3.0",
-    "jose": "^5.2.4",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "@prisma/client": "^5.14.0",
+    "hono": "^4.4.0",
+    "jose": "^5.3.0",
     "js-sha3": "^0.9.3",
     "prisma": "^5.14.0",
     "rfc4648": "^1.5.3"
-  }
+  },
+  "volta": {
+    "node": "20.14.0"
+  },
+  "packageManager": "pnpm@9.1.3+sha256.7f63001edc077f1cff96cacba901f350796287a2800dfa83fe898f94183e4f5f"
 }
